@@ -295,7 +295,7 @@ class _RoletaHomePageState extends State<RoletaHomePage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.16),
+                  color: Colors.white.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -461,7 +461,7 @@ class _RoletaHomePageState extends State<RoletaHomePage> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
-                              color: _selectedCategory!.color.withOpacity(0.22),
+                              color: _selectedCategory!.color.withValues(alpha: 0.22),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
