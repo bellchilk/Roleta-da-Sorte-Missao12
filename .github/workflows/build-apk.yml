@@ -1,0 +1,48 @@
+name: Build APK Android
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Compilar APK release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter estável
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Gerar estrutura Android
+        run: flutter create . --platforms=android --project-name=roleta_missao12 --org=br.clubrobot
+
+      - name: Configurar permissões Bluetooth
+        run: python3 tool/patch_android.py
+
+      - name: Baixar dependências
+        run: flutter pub get
+
+      - name: Verificar código Dart
+        run: flutter analyze
+
+      - name: Compilar APK
+        run: flutter build apk --release
+
+      - name: Publicar APK como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: roleta-da-sorte-missao12-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14

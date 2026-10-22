@@ -1,0 +1,4 @@
+Projeto: Roleta da Sorte — Missão 12
+
+Inclui aplicativo Flutter, comunicação BLE, firmware ESP32 e workflow GitHub Actions.
+Leia README.md para instruções de instalação, circuito e compilação do APK.
