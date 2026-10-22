@@ -313,6 +313,8 @@ class _RoletaHomePageState extends State<RoletaHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const RoletaCover(),
+              const SizedBox(height: 18),
               const Text(
                 'Gire, escolha e desafie-se!',
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
@@ -544,4 +546,236 @@ class _RoletaHomePageState extends State<RoletaHomePage> {
       ),
     );
   }
+}
+
+class RoletaCover extends StatelessWidget {
+  const RoletaCover({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFE8FCFC), Color(0xFFBDF4F2)],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: -45,
+                  left: -35,
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF27BDB8),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: -70,
+                  right: -45,
+                  child: Container(
+                    width: 190,
+                    height: 190,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF28C28),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  right: 12,
+                  child: Image.network(
+                    'https://raw.githubusercontent.com/bellchilk/Guincho-Missao14/main/assets/images/LOGO.png',
+                    height: constraints.maxHeight * .18,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Text(
+                      'ClubRobot',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF087F8C),
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: constraints.maxHeight * .20,
+                  height: constraints.maxHeight * .54,
+                  child: CustomPaint(painter: _CoverWheelPainter()),
+                ),
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF064D67),
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Colors.white, width: 3),
+                    ),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Roleta',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 42,
+                              height: 1,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -1.2,
+                            ),
+                          ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'da Sorte',
+                            style: TextStyle(
+                              color: Color(0xFFFFD52A),
+                              fontSize: 38,
+                              height: 1.05,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _CoverWheelPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width * .56, size.height * .52);
+    final radius = size.width * .31;
+    final colors = <Color>[
+      const Color(0xFFF28C28),
+      const Color(0xFF25B9C4),
+      const Color(0xFFFFD52A),
+      const Color(0xFF55B82E),
+      const Color(0xFF079FE6),
+      const Color(0xFF7139D9),
+      const Color(0xFFF32282),
+      const Color(0xFF1676E8),
+    ];
+    final wheelPaint = Paint()..style = PaintingStyle.fill;
+    canvas.drawCircle(center, radius + 10, Paint()..color = const Color(0xFF075D75));
+    canvas.drawCircle(center, radius + 3, Paint()..color = const Color(0xFF26C7C3));
+    for (var i = 0; i < 8; i++) {
+      wheelPaint.color = colors[i];
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        -pi / 2 + i * pi / 4,
+        pi / 4,
+        true,
+        wheelPaint,
+      );
+      final angle = -pi / 2 + (i + .5) * pi / 4;
+      final iconCenter = center + Offset(cos(angle), sin(angle)) * radius * .62;
+      final icon = TextPainter(
+        text: TextSpan(
+          text: const ['★', '♥', '☀', '◆', '♫', '⚙', 'ϟ', '●'][i],
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      icon.paint(canvas, iconCenter - Offset(icon.width / 2, icon.height / 2));
+    }
+    canvas.drawCircle(center, radius * .17, Paint()..color = const Color(0xFFFFD52A));
+    canvas.drawCircle(
+      center,
+      radius * .12,
+      Paint()..color = const Color(0xFFFFE76B),
+    );
+    final pointer = Path()
+      ..moveTo(center.dx - 22, center.dy - radius - 26)
+      ..lineTo(center.dx + 22, center.dy - radius - 26)
+      ..lineTo(center.dx, center.dy - radius + 18)
+      ..close();
+    canvas.drawPath(pointer, Paint()..color = const Color(0xFFFFC928));
+    final robotBody = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(size.width * .24, size.height * .58),
+        width: size.width * .24,
+        height: size.height * .29,
+      ),
+      const Radius.circular(16),
+    );
+    canvas.save();
+    canvas.translate(size.width * .24, size.height * .58);
+    canvas.rotate(-.12);
+    canvas.translate(-size.width * .24, -size.height * .58);
+    canvas.drawRRect(robotBody, Paint()..color = const Color(0xFFF28C28));
+    final head = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(size.width * .24, size.height * .39),
+        width: size.width * .26,
+        height: size.height * .13,
+      ),
+      const Radius.circular(24),
+    );
+    canvas.drawRRect(head, Paint()..color = const Color(0xFF21BDB8));
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(size.width * .24, size.height * .39),
+          width: size.width * .22,
+          height: size.height * .095,
+        ),
+        const Radius.circular(18),
+      ),
+      Paint()..color = const Color(0xFF064D67),
+    );
+    for (final dx in [-.04, .04]) {
+      canvas.drawCircle(
+        Offset(size.width * (.24 + dx), size.height * .39),
+        size.width * .021,
+        Paint()..color = const Color(0xFFC7F33D),
+      );
+      canvas.drawCircle(
+        Offset(size.width * (.24 + dx), size.height * .39),
+        size.width * .013,
+        Paint()..color = const Color(0xFF17232B),
+      );
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
