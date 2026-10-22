@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-\"\"\"Adiciona permissões BLE ao AndroidManifest gerado pelo Flutter.\"\"\"
+"""Adiciona permissões BLE ao AndroidManifest gerado pelo Flutter."""
 
 from pathlib import Path
 
@@ -18,12 +18,23 @@ permissions = [
     '<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />',
     '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />',
 ]
-missing = [permission for permission in permissions if permission.split('"')[1] not in content]
+
+missing = [
+    permission
+    for permission in permissions
+    if permission.split('"')[1] not in content
+]
+
 if missing:
     marker = "<application"
     if marker not in content:
         raise SystemExit("Não foi encontrado o elemento <application> no manifesto.")
-    content = content.replace(marker, "\n    " + "\n    ".join(missing) + "\n\n    " + marker, 1)
+
+    content = content.replace(
+        marker,
+        "\n    " + "\n    ".join(missing) + "\n\n    " + marker,
+        1,
+    )
     manifest.write_text(content, encoding="utf-8")
     print("Permissões Bluetooth adicionadas ao AndroidManifest.xml.")
 else:
