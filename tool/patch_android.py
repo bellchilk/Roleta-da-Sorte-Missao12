@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Adiciona permissões BLE ao AndroidManifest gerado pelo Flutter."""
+"""Adiciona permissões BLE e regra ProGuard ao projeto Android gerado pelo Flutter."""
 
 from pathlib import Path
 
-manifest = Path("android/app/src/main/AndroidManifest.xml")
+ROOT = Path(__file__).resolve().parents[1]
+manifest = ROOT / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
 if not manifest.exists():
     raise SystemExit(
         "AndroidManifest.xml não encontrado. Execute primeiro: "
@@ -39,3 +40,12 @@ if missing:
     print("Permissões Bluetooth adicionadas ao AndroidManifest.xml.")
 else:
     print("As permissões Bluetooth já estão presentes.")
+
+# Repete a correção usada na Missão 14: a regra deve terminar com uma quebra
+# de linha real, não com os caracteres literais barra invertida + n.
+proguard = ROOT / "android" / "app" / "proguard-rules.pro"
+proguard.write_text(
+    "-keep class com.lib.flutter_blue_plus.** { *; }\n",
+    encoding="utf-8",
+)
+print("Regra ProGuard do flutter_blue_plus configurada.")
