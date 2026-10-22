@@ -27,6 +27,22 @@ jobs:
       - name: Gerar estrutura Android
         run: flutter create . --platforms=android --project-name=roleta_missao12 --org=br.clubrobot
 
+      - name: Corrigir teste padrão do Flutter
+        run: |
+          mkdir -p test
+          cat > test/widget_test.dart <<'EOF'
+          import 'package:flutter_test/flutter_test.dart';
+          import 'package:roleta_missao12/main.dart';
+
+          void main() {
+            testWidgets('exibe a tela inicial da Roleta da Sorte', (tester) async {
+              await tester.pumpWidget(const RoletaApp());
+              expect(find.text('Roleta da Sorte'), findsOneWidget);
+              expect(find.text('Gire, escolha e desafie-se!'), findsOneWidget);
+            });
+          }
+          EOF
+
       - name: Configurar permissões Bluetooth
         run: python3 tool/patch_android.py
 
@@ -35,6 +51,9 @@ jobs:
 
       - name: Verificar código Dart
         run: flutter analyze
+
+      - name: Executar testes
+        run: flutter test
 
       - name: Compilar APK
         run: flutter build apk --release
